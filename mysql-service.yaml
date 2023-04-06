@@ -8,7 +8,7 @@ spec:
     ports:
       - protocol: TCP
         port: 6060
-        targetPort: 5080
+        targetPort: 8080
     clusterIP: None
     selector:
         app: blog
