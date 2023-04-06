@@ -30,7 +30,7 @@ data:
             upstream backend {
                 # must match the target service name
                 # server <backend-wordpress-svc-name>:80;
-                server wordpress-service:80;
+                server wordpress-service:5000;
             }
 
             server {
@@ -42,7 +42,7 @@ data:
 
                     # You have to change this according to your setup.
                     # proxy_pass http://<backend-wordpress-svc-name>;
-                    proxy_pass http://wordpress-service;
+                    proxy_pass http://wordpress-service:5000;
 
                     # Modify `Location` of 301 or 302 HTTP response, so
                     # that the browser will follow the correct location.
