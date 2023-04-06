@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+    name: nginx-fluentd-daemonset
+    labels:
+        app: blog
+spec:
+    selector:
+        matchLabels:
+            app: blog
+    updateStrategy:
+        type: OnDelete
+    minReadySeconds: 5
+    template:
+        metadata:
+            labels:
+                app: blog
+                run: nginx
+        spec:
+            containers:
+              - name: nginx
+                image: nginx:latest
+                imagePullPolicy: Always
+                resources: {}
+                ports:
+                  - containerPort: 8080
+                volumeMounts:
+                  - name: nginx-config
+                    mountPath: /etc/nginx
+                  - name: log
+                    mountPath: /log
+              - name: fluentd
+                image: fluentd:latest
+                ports:
+                  - containerPort: 8090
+                volumeMounts:
+                  - name: fluentd-config
+                    mountPath: /fluentd/etc
+                  - name: log
+                    mountPath: /log
+            volumes:
+              - name: nginx-config
+                configMap:
+                    name: nginx-configmap
+                    defaultMode: 0400
+              - name: fluentd-config
+                configMap:
+                    name: fluentd-configmap
+                    defaultMode: 0644
+              - name: log
+                emptyDir: {}

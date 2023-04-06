@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: wordpress-deployment
+    labels:
+        app: blog
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: blog
+    strategy:
+        type: Recreate
+    template:
+        metadata:
+            labels:
+                app: blog
+                run: wordpress
+        spec:
+            containers:
+              - name: wordpress
+                image: wordpress:latest
+                imagePullPolicy: Always
+                resources: {}
+                ports:
+                  - containerPort: 5050
+                env:
+                  - name: MYSQL_ROOT_PASSWORD
+                    valueFrom:
+                        secretKeyRef:
+                            name: mysql-secret
+                            key: mysql-root-password
+                  - name: MYSQL_USER
+                    valueFrom:
+                        secretKeyRef:
+                            name: mysql-secret
+                            key: mysql-user
+                  - name: MYSQL_PASSWORD
+                    valueFrom:
+                        secretKeyRef:
+                            name: mysql-secret
+                            key: mysql-user-password
+                  - name: MYSQL_DATABASE
+                    valueFrom:
+                        secretKeyRef:
+                            name: mysql-secret
+                            key: mysql-database
+                  - name: HOST
+                    valueFrom:
+                        configMapKeyRef:
+                            name: mysql-wordpress
+                            key: database_url
+                volumeMounts:
+                  - mountPath: /cache/blog-demo
+                    name: htmldir
+            volumes:
+              - name: htmldir
+                emptyDir: {}

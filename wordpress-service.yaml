@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: wordpress-service
+    labels:
+        app: blog
+spec:
+    ports:
+      - protocol: TCP
+        port: 5000
+        targetPort: 5050
+    selector:
+        app: blog
+        run: wordpress
+#    type: LoadBalancer

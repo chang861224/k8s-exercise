@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: mysql-statefulset
+    labels:
+        app: blog
+spec:
+    replicas: 1
+    serviceName: mysql-service
+    selector:
+        matchLabels:
+            app: blog
+    updateStrategy:
+        type: RollingUpdate
+    podManagementPolicy: "OrderedReady"
+    template:
+        metadata:
+            labels:
+                app: blog
+                run: mysql
+        spec:
+            containers:
+              - name: mysql
+                image: mysql:latest
+                ports:
+                  - containerPort: 5080
+                env:
+                  - name: MYSQL_ROOT_PASSWORD
+                    valueFrom:
+                        secretKeyRef:
+                            name: mysql-secret
+                            key: mysql-root-password
+                  - name: MYSQL_USER
+                    valueFrom:
+                        secretKeyRef:
+                            name: mysql-secret
+                            key: mysql-user
+                  - name: MYSQL_PASSWORD
+                    valueFrom:
+                        secretKeyRef:
+                            name: mysql-secret
+                            key: mysql-user-password
+                  - name: MYSQL_DATABASE
+                    valueFrom:
+                        secretKeyRef:
+                            name: mysql-secret
+                            key: mysql-database
+                volumeMounts:
+                  - name: htmldir
+                    mountPath: /cache/mysql
+            volumes:
+              - name: htmldir
+                emptyDir: {}
