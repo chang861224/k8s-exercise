@@ -23,7 +23,7 @@ spec:
                 imagePullPolicy: Always
                 resources: {}
                 ports:
-                  - containerPort: 8080
+                  - containerPort: 80
                 volumeMounts:
                   - name: nginx-config
                     mountPath: /etc/nginx
@@ -32,7 +32,7 @@ spec:
               - name: fluentd
                 image: fluentd:latest
                 ports:
-                  - containerPort: 8090
+                  - containerPort: 9880
                 volumeMounts:
                   - name: fluentd-config
                     mountPath: /fluentd/etc
